@@ -2,6 +2,7 @@
 
 namespace App\Services\TicTacToe;
 
+use App\Enums\GameState;
 use App\Enums\Player;
 use App\Models\Game;
 use App\Repositories\Contracts\GameMoveRepositoryInterface;
@@ -67,6 +68,10 @@ class GameService implements GameServiceContract
 
         $this->gameMoveRepository
             ->createNewMove($activeGame->id, $player, $playerCoordinates->getX(), $playerCoordinates->getY());
+
+        if ($activeGame->state !== $ticTacToe->getState()) {
+            $this->gameRepository->updateGameStatus($ticTacToe->getState());
+        }
     }
 
     public function state()
@@ -75,6 +80,10 @@ class GameService implements GameServiceContract
 
         return [
             'board' => $game->getBoard(),
+            'score' => [
+                Player::X->value => $this->gameRepository->getScoreForState(GameState::WonX),
+                Player::O->value => $this->gameRepository->getScoreForState(GameState::WonO)
+            ],
             'currentTurn' => $game->getCurrentPlayer(),
             'victory' => $game->getState()
         ];

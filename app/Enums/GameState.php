@@ -6,7 +6,7 @@ enum GameState: string
 {
     case WonX = 'x';
 
-    case WonY = 'y';
+    case WonO = 'o';
 
     case Draw = 'draw';
 

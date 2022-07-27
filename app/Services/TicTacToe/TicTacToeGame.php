@@ -38,7 +38,9 @@ class TicTacToeGame
 
     public function getCurrentPlayer()
     {
-        return $this->currentPlayer->value ?? Player::X->value.' | '.Player::O->value;
+        return $this->state === GameState::Active
+            ? $this->currentPlayer->value ?? Player::X->value.' | '.Player::O->value
+            : '';
     }
 
     public function move(PlayerCoordinates $coordinates)
@@ -88,7 +90,7 @@ class TicTacToeGame
         if ($this->isWinningMove()) {
             $this->state = ($this->currentPlayer === Player::X)
                 ? GameState::WonX
-                : GameState::WonY;
+                : GameState::WonO;
         } elseif (!$this->getRemainingMoves()) {
             $this->state = GameState::Draw;
         }

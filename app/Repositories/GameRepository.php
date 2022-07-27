@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\GameState;
+use App\Enums\Player;
 use App\Models\Game;
 use App\Repositories\Contracts\GameRepositoryInterface;
 
@@ -31,5 +32,16 @@ class GameRepository implements GameRepositoryInterface
         return $this->game::create([
             'state' => GameState::Active
         ]);
+    }
+
+    public function updateGameStatus(GameState $state)
+    {
+        return $this->game->where('state', $state)
+            ->update(['state' => $state]);
+    }
+
+    public function getScoreForState(GameState $state): int
+    {
+        return $this->game::where('state', $state->value)->count();
     }
 }
