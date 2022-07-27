@@ -26,13 +26,6 @@ class TicTacToeGame
         ];
     }
 
-    public function initialize(PlayerCoordinates ...$coordinates) 
-    {
-        // foreach ($coordinates as $coordinate) {
-        //     $this->board[$coordinate->getY()][$coordinate->getX()] = $coordinate->getPlayer()->name;
-        // }
-    }
-
     public function getBoard()
     {
         return $this->board;
@@ -43,16 +36,21 @@ class TicTacToeGame
         return $this->state;
     }
 
+    public function getCurrentPlayer()
+    {
+        return $this->currentPlayer->value ?? Player::X->value.' | '.Player::O->value;
+    }
+
     public function move(PlayerCoordinates $coordinates)
     {
         if ($this->state !== GameState::Active) {
             throw new Exception("The game is over.");
         }
 
-        $gridCell = $this->board[$coordinates->getY()][$coordinates->getX()];
+        $boardCell = $this->board[$coordinates->getY()][$coordinates->getX()];
 
-        if ($gridCell) {
-            throw new Exception('The peice is already taken.');
+        if ($boardCell) {
+            throw new Exception('The piece is already taken.');
         }
 
         if (!is_null($this->currentPlayer) && $coordinates->getPlayer() !== $this->currentPlayer)
@@ -60,7 +58,7 @@ class TicTacToeGame
             throw new Exception('Piece is being placed out of turn.');
         }
 
-        $this->board[$coordinates->getY()][$coordinates->getX()] = $coordinates->getPlayer()->name;
+        $this->board[$coordinates->getY()][$coordinates->getX()] = $coordinates->getPlayer()->value;
 
         $this->updateGameState();
 
@@ -74,7 +72,7 @@ class TicTacToeGame
         }
 
         $this->currentPlayer = ($player === Player::X)
-            ? Player::Y
+            ? Player::O
             : Player::X;
     }
 

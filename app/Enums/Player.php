@@ -6,5 +6,5 @@ enum Player: string
 {
     case X = 'x';
 
-    case Y = 'y';
+    case O = 'o';
 }
