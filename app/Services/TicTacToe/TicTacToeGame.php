@@ -2,6 +2,7 @@
 
 namespace App\Services\TicTacToe;
 
+use App\Enums\GameState;
 use App\Enums\Player;
 use App\Services\TicTacToe\PlayerCoordinates;
 use Exception;
@@ -9,6 +10,8 @@ use Exception;
 class TicTacToeGame
 {
     private array $board;
+
+    private GameState $state = GameState::Active;
 
     private ?Player $currentPlayer = null;
 
@@ -25,14 +28,9 @@ class TicTacToeGame
 
     public function initialize(PlayerCoordinates ...$coordinates) 
     {
-        foreach ($coordinates as $coordinate) {
-            $this->board[$coordinate->getY()][$coordinate->getX()] = $coordinate->getPlayer()->name;
-        }
-    }
-
-    public function getEmptyBoard()
-    {
-        // 
+        // foreach ($coordinates as $coordinate) {
+        //     $this->board[$coordinate->getY()][$coordinate->getX()] = $coordinate->getPlayer()->name;
+        // }
     }
 
     public function getBoard()
@@ -40,8 +38,17 @@ class TicTacToeGame
         return $this->board;
     }
 
+    public function getState()
+    {
+        return $this->state;
+    }
+
     public function move(PlayerCoordinates $coordinates)
     {
+        if ($this->state !== GameState::Active) {
+            throw new Exception("The game is over.");
+        }
+
         $gridCell = $this->board[$coordinates->getY()][$coordinates->getX()];
 
         if ($gridCell) {
@@ -54,6 +61,9 @@ class TicTacToeGame
         }
 
         $this->board[$coordinates->getY()][$coordinates->getX()] = $coordinates->getPlayer()->name;
+
+        $this->updateGameState();
+
         $this->updateCurrentPlayer($coordinates->getPlayer());
     }
 
@@ -68,8 +78,90 @@ class TicTacToeGame
             : Player::X;
     }
 
-    protected function checkWinner()
+    public function getRemainingMoves()
     {
-        // define winner
+        $flattenBoard = array_merge(...$this->board);
+
+        return (count($flattenBoard) - count(array_filter($flattenBoard)));
+    }
+
+    private function updateGameState()
+    {
+        if ($this->isWinningMove()) {
+            $this->state = ($this->currentPlayer === Player::X)
+                ? GameState::WonX
+                : GameState::WonY;
+        } elseif (!$this->getRemainingMoves()) {
+            $this->state = GameState::Draw;
+        }
+    }
+
+    private function isWinningMove()
+    {
+        return ($this->hasHorizontalWin() ||
+                $this->hasVerticallWin() ||
+                $this->hasDiagonalWin());
+    }
+
+    private function hasHorizontalWin()
+    {
+        for ($i=0; $i<3; $i++) {
+            $winner = $this->board[$i][0];
+
+            for ($j=0; $j<3; $j++) {
+                if ($this->board[$i][$j] != $winner) {
+                    $winner = null;
+                    break;
+                }
+            }
+
+            if ($winner !== null) {
+                break;
+            }
+        }
+
+        return boolval($winner);
+    }
+
+    private function hasVerticallWin()
+    {
+        for ($i=0; $i<3; $i++) {
+            $winner = $this->board[0][$i];
+
+            for ($j=0; $j<3; $j++) {
+                if ($this->board[$j][$i] != $winner) {
+                    $winner = null;
+                    break;
+                }
+            }
+
+            if ($winner !== null) {
+                break;
+            }
+        }
+        return boolval($winner);
+    }
+
+    private function hasDiagonalWin()
+    {
+        $winner = $this->board[0][0];
+        for ($i=0; $i<3; $i++) {
+            if ($this->board[$i][$i] != $winner) {
+                $winner = null;
+                break;
+            }
+        }
+
+        if ($winner === null) {
+            $winner = $this->board[0][2];
+            for ($i=0; $i<3; $i++) {
+                if ($this->board[$i][2-$i] != $winner) {
+                    $winner = null;
+                    break;
+                }
+            }
+        }
+
+        return boolval($winner);
     }
 }

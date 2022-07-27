@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum Player: int
+enum Player: string
 {
     case X = 'x';
 
