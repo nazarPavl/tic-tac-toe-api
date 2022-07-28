@@ -44,6 +44,17 @@ class GameService implements GameServiceContract
         return $activeGame;
     }
 
+    public function latestGame()
+    {
+        $latest = $this->gameRepository->getLatestGame();
+
+        if (!$latest) {
+            throw new NotAcceptable();
+        }
+
+        return $latest;
+    }
+
     public function buildTicTacToeGame(Game $game)
     {
         $ticTacToe = new TicTacToeGame();
@@ -83,7 +94,7 @@ class GameService implements GameServiceContract
 
     public function state()
     {   
-        $game = $this->buildTicTacToeGame($this->activeGame());
+        $game = $this->buildTicTacToeGame($this->latestGame());
 
         return [
             'board' => $game->getBoard(),
@@ -98,7 +109,7 @@ class GameService implements GameServiceContract
 
     public function restart()
     {
-        $activeGame = $this->activeGame();
+        $activeGame = $this->latestGame();
 
         if ($activeGame->state === GameState::Active) {
             $this->gameRepository->updateGameStatus($activeGame->id, GameState::Draw);
