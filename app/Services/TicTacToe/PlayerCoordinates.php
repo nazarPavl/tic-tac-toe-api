@@ -3,7 +3,7 @@
 namespace App\Services\TicTacToe;
 
 use App\Enums\Player;
-use Exception;
+use App\Exceptions\NotAcceptable;
 
 class PlayerCoordinates
 {
@@ -18,7 +18,7 @@ class PlayerCoordinates
     )
     {
         if (!$this->coordinateIsValid($x) || !$this->coordinateIsValid($y)) {
-            throw new Exception('Invalid coordinates.');
+            throw new NotAcceptable();
         }
 
         $this->x = $x;

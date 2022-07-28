@@ -4,8 +4,9 @@ namespace App\Services\TicTacToe;
 
 use App\Enums\GameState;
 use App\Enums\Player;
+use App\Exceptions\Conflict;
+use App\Exceptions\NotAcceptable;
 use App\Services\TicTacToe\PlayerCoordinates;
-use Exception;
 
 class TicTacToeGame
 {
@@ -46,18 +47,18 @@ class TicTacToeGame
     public function move(PlayerCoordinates $coordinates)
     {
         if ($this->state !== GameState::Active) {
-            throw new Exception("The game is over.");
+            throw new NotAcceptable();
         }
 
         $boardCell = $this->board[$coordinates->getY()][$coordinates->getX()];
 
         if ($boardCell) {
-            throw new Exception('The piece is already taken.', 409);
+            throw new Conflict();
         }
 
         if (!is_null($this->currentPlayer) && $coordinates->getPlayer() !== $this->currentPlayer)
         {
-            throw new Exception('Piece is being placed out of turn.', 406);
+            throw new NotAcceptable();
         }
 
         $this->board[$coordinates->getY()][$coordinates->getX()] = $coordinates->getPlayer()->value;

@@ -4,6 +4,7 @@ namespace App\Services\TicTacToe;
 
 use App\Enums\GameState;
 use App\Enums\Player;
+use App\Exceptions\NotAcceptable;
 use App\Models\Game;
 use App\Repositories\Contracts\GameMoveRepositoryInterface;
 use App\Repositories\Contracts\GameRepositoryInterface;
@@ -37,7 +38,7 @@ class GameService implements GameServiceContract
         $activeGame = $this->gameRepository->getActiveGame();
 
         if (!$activeGame) {
-            throw new Exception("There is no active game.");
+            throw new NotAcceptable();
         }
 
         return $activeGame;
@@ -61,7 +62,7 @@ class GameService implements GameServiceContract
         $player = Player::tryFrom($player);
 
         if (is_null($player)) {
-            throw new Exception("Invalid player value.");
+            throw new NotAcceptable();
         }
 
         $activeGame = $this->activeGame();

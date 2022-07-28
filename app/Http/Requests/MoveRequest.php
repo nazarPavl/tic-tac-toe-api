@@ -25,8 +25,8 @@ class MoveRequest extends FormRequest
     public function rules()
     {
         return [
-            Player::X->value => 'required|numeric',
-            Player::O->value => 'required|numeric'
+            'x' => 'required|numeric',
+            'y' => 'required|numeric'
         ];
     }
 }

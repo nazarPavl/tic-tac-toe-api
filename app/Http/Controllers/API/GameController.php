@@ -20,7 +20,7 @@ class GameController extends Controller
     {
         $validated = $request->validated();
 
-        $gameService->makeMove($player, $validated[Player::X->value], $validated[Player::O->value]);
+        $gameService->makeMove($player, $validated['x'], $validated['y']);
 
         return response()->json($gameService->state());
     }
