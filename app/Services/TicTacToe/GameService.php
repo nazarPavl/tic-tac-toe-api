@@ -34,7 +34,13 @@ class GameService implements GameServiceContract
 
     public function activeGame()
     {
-        return $this->gameRepository->getActiveGame();
+        $activeGame = $this->gameRepository->getActiveGame();
+
+        if (!$activeGame) {
+            throw new Exception("There is no active game.");
+        }
+
+        return $activeGame;
     }
 
     public function buildTicTacToeGame(Game $game)
@@ -55,7 +61,7 @@ class GameService implements GameServiceContract
         $player = Player::tryFrom($player);
 
         if (is_null($player)) {
-            throw new Exception("Invalid player.");
+            throw new Exception("Invalid player value.");
         }
 
         $activeGame = $this->activeGame();
@@ -70,7 +76,7 @@ class GameService implements GameServiceContract
             ->createNewMove($activeGame->id, $player, $playerCoordinates->getX(), $playerCoordinates->getY());
 
         if ($activeGame->state !== $ticTacToe->getState()) {
-            $this->gameRepository->updateGameStatus($ticTacToe->getState());
+            $this->gameRepository->updateGameStatus($activeGame->id, $ticTacToe->getState());
         }
     }
 
@@ -91,6 +97,17 @@ class GameService implements GameServiceContract
 
     public function restart()
     {
-        // 
+        $activeGame = $this->activeGame();
+
+        if ($activeGame->state === GameState::Active) {
+            $this->gameRepository->updateGameStatus($activeGame->id, GameState::Draw);
+        }
+
+        $this->gameRepository->createNewGame();
+    }
+
+    public function delete()
+    {
+        $this->gameRepository->truncateGames();
     }
 }

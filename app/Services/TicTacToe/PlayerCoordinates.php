@@ -18,7 +18,7 @@ class PlayerCoordinates
     )
     {
         if (!$this->coordinateIsValid($x) || !$this->coordinateIsValid($y)) {
-            throw new Exception('Invalid coordinate.');
+            throw new Exception('Invalid coordinates.');
         }
 
         $this->x = $x;

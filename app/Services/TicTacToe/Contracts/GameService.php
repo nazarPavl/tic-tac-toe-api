@@ -17,4 +17,6 @@ interface GameService
     public function state();
 
     public function restart();
+
+    public function delete();
 }

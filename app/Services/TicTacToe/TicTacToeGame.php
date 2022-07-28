@@ -52,12 +52,12 @@ class TicTacToeGame
         $boardCell = $this->board[$coordinates->getY()][$coordinates->getX()];
 
         if ($boardCell) {
-            throw new Exception('The piece is already taken.');
+            throw new Exception('The piece is already taken.', 409);
         }
 
         if (!is_null($this->currentPlayer) && $coordinates->getPlayer() !== $this->currentPlayer)
         {
-            throw new Exception('Piece is being placed out of turn.');
+            throw new Exception('Piece is being placed out of turn.', 406);
         }
 
         $this->board[$coordinates->getY()][$coordinates->getX()] = $coordinates->getPlayer()->value;

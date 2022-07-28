@@ -18,7 +18,8 @@ class GameRepository implements GameRepositoryInterface
 
     public function getActiveGame()
     {
-        return $this->game::with('moves')->where('state', GameState::Active->value)
+        return $this->game::with('moves')
+            ->where('state', GameState::Active->value)
             ->first();
     }
 
@@ -34,10 +35,15 @@ class GameRepository implements GameRepositoryInterface
         ]);
     }
 
-    public function updateGameStatus(GameState $state)
+    public function updateGameStatus(int $gameId, GameState $state)
     {
-        return $this->game->where('state', $state)
-            ->update(['state' => $state]);
+        return $this->game->where('id', $gameId)
+            ->update(['state' => $state->value]);
+    }
+
+    public function truncateGames()
+    {
+        $this->game::query()->delete();
     }
 
     public function getScoreForState(GameState $state): int

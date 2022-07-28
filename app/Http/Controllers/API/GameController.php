@@ -24,4 +24,20 @@ class GameController extends Controller
 
         return response()->json($gameService->state());
     }
+
+    public function restart(GameService $gameService)
+    {
+        $gameService->restart();
+
+        return response()->json($gameService->state());
+    }
+
+    public function delete(GameService $gameService)
+    {
+        $gameService->delete();
+
+        return response()->json([
+            'currentTurn' => Player::X->value.' | '.Player::O->value
+        ]);
+    }
 }

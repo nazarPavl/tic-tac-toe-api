@@ -17,5 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(GameController::class)->group(function() {
     Route::get('/', 'index');
+    Route::delete('/', 'delete');
+    Route::post('/restart', 'restart');
     Route::post('/{player}', 'move');
 });

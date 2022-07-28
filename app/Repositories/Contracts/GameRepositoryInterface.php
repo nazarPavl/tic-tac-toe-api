@@ -13,7 +13,9 @@ interface GameRepositoryInterface
 
     public function createNewGame(): Game;
 
-    public function updateGameStatus(GameState $state);
+    public function updateGameStatus(int $gameId, GameState $state);
+
+    public function truncateGames();
 
     public function getScoreForState(GameState $state): int;
 }
