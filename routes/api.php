@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+
+use App\Http\Controllers\API\GameController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,3 +14,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::controller(GameController::class)->group(function() {
+    Route::get('/', 'index');
+    Route::delete('/', 'delete');
+    Route::post('/restart', 'restart');
+    Route::post('/{player}', 'move');
+});
